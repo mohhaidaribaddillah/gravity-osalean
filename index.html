@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>OSalean - Dashboard Sales Overview</title>
+    <meta name="description"
+        content="OSalean Sales Dashboard - Monitor your sales performance and analytics in real-time" />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec5b",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102216",
+                        "navy-dark": "#0a192f",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+
+        /* Mobile Menu Animation */
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        /* Floating Buttons */
+        .floating-wa {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            z-index: 999;
+            animation: pulse 2s infinite;
+        }
+
+        .floating-up {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999;
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 0.3s ease;
+        }
+
+        .floating-up.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* Prevent horizontal scroll */
+        * {
+            max-width: 100%;
+        }
+
+        .container-custom {
+            width: 100%;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .container-custom {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-[#111813] dark:text-white font-display min-h-screen">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#f0f4f2] dark:border-white/10">
+        <div class="container-custom mx-auto max-w-[1440px]">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo -->
+                <div class="flex items-center gap-2">
+                    <img src="images/logo.png" alt="OSalean Logo" class="h-8 w-8 object-contain" />
+                    <h2 class="text-[#111813] dark:text-white text-xl font-black tracking-tight">OSalean</h2>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center gap-8">
+                    <a class="text-primary text-sm font-bold border-b-2 border-primary pb-1"
+                        href="index.html">Dashboard</a>
+                    <a class="text-[#61896f] dark:text-gray-400 text-sm font-medium hover:text-primary transition-colors"
+                        href="analytics.html">Analytics</a>
+                    <a class="text-[#61896f] dark:text-gray-400 text-sm font-medium hover:text-primary transition-colors"
+                        href="invoice.html">Invoice</a>
+                    <a class="text-[#61896f] dark:text-gray-400 text-sm font-medium hover:text-primary transition-colors"
+                        href="products.html">Products</a>
+                    <a class="text-[#61896f] dark:text-gray-400 text-sm font-medium hover:text-primary transition-colors"
+                        href="blog.html">Blog</a>
+                </nav>
+
+                <!-- Right Side Controls -->
+                <div class="flex items-center gap-4">
+                    <div class="hidden sm:flex gap-2">
+                        <button
+                            class="size-10 flex items-center justify-center rounded-lg bg-[#f0f4f2] dark:bg-white/5 text-[#111813] dark:text-white hover:bg-primary/20 transition-colors">
+                            <i class="bi bi-bell text-[20px]"></i>
+                        </button>
+                        <button
+                            class="size-10 flex items-center justify-center rounded-lg bg-[#f0f4f2] dark:bg-white/5 text-[#111813] dark:text-white hover:bg-primary/20 transition-colors">
+                            <i class="bi bi-gear text-[20px]"></i>
+                        </button>
+                    </div>
+
+                    <!-- Profile -->
+                    <div class="hidden sm:flex items-center gap-3 pl-4 border-l border-[#f0f4f2] dark:border-white/10">
+                        <div class="text-right hidden lg:block">
+                            <p class="text-xs font-bold text-[#111813] dark:text-white leading-none">Kim Minchae</p>
+                            <p class="text-[10px] text-[#61896f] dark:text-gray-400 mt-1">Store Owner</p>
+                        </div>
+                        <div class="size-10 rounded-full bg-cover bg-center border-2 border-primary overflow-hidden">
+                            <img src="images/profile.png" alt="Profile photo of Kim Minchae"
+                                class="w-full h-full object-cover" />
+                        </div>
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <button id="mobileMenuBtn"
+                        class="md:hidden size-10 flex items-center justify-center rounded-lg bg-[#f0f4f2] dark:bg-white/5 text-[#111813] dark:text-white">
+                        <i class="bi bi-list text-[24px]"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenuOverlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu"
+        class="mobile-menu fixed top-0 left-0 h-full w-64 bg-white dark:bg-background-dark z-50 shadow-xl md:hidden">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-2">
+                    <img src="images/logo.png" alt="OSalean Logo" class="h-8 w-8 object-contain" />
+                    <h2 class="text-[#111813] dark:text-white text-xl font-black">OSalean</h2>
+                </div>
+                <button id="closeMobileMenu"
+                    class="size-8 flex items-center justify-center rounded-lg text-[#111813] dark:text-white">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Profile -->
+            <div class="flex items-center gap-3 pb-6 mb-6 border-b border-[#f0f4f2] dark:border-white/10">
+                <div class="size-12 rounded-full bg-cover bg-center border-2 border-primary overflow-hidden">
+                    <img src="images/profile.png" alt="Profile photo" class="w-full h-full object-cover" />
+                </div>
+                <div>
+                    <p class="text-sm font-bold text-[#111813] dark:text-white">Kim Minchae</p>
+                    <p class="text-xs text-[#61896f] dark:text-gray-400">Store Owner</p>
+                </div>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <nav class="flex flex-col gap-2">
+                <a href="index.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary/10 text-primary font-bold">
+                    <i class="bi bi-speedometer2"></i>
+                    Dashboard
+                </a>
+                <a href="analytics.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#61896f] dark:text-gray-400 hover:bg-[#f0f4f2] dark:hover:bg-white/5">
+                    <i class="bi bi-graph-up"></i>
+                    Analytics
+                </a>
+                <a href="invoice.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#61896f] dark:text-gray-400 hover:bg-[#f0f4f2] dark:hover:bg-white/5">
+                    <i class="bi bi-receipt"></i>
+                    Invoice
+                </a>
+                <a href="products.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#61896f] dark:text-gray-400 hover:bg-[#f0f4f2] dark:hover:bg-white/5">
+                    <i class="bi bi-box-seam"></i>
+                    Products
+                </a>
+                <a href="blog.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#61896f] dark:text-gray-400 hover:bg-[#f0f4f2] dark:hover:bg-white/5">
+                    <i class="bi bi-file-text"></i>
+                    Blog
+                </a>
+            </nav>
+
+            <!-- Mobile Actions -->
+            <div class="mt-6 pt-6 border-t border-[#f0f4f2] dark:border-white/10">
+                <div class="flex gap-2">
+                    <button
+                        class="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-[#f0f4f2] dark:bg-white/5 text-[#111813] dark:text-white">
+                        <i class="bi bi-bell text-[20px]"></i>
+                    </button>
+                    <button
+                        class="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-[#f0f4f2] dark:bg-white/5 text-[#111813] dark:text-white">
+                        <i class="bi bi-gear text-[20px]"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container-custom mx-auto max-w-[1440px] py-8">
+
+        <!-- Page Heading & Controls -->
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
+            <div>
+                <h1 class="text-[#111813] dark:text-white text-3xl md:text-4xl font-black tracking-tight">Sales Overview
+                </h1>
+                <p class="text-[#61896f] dark:text-gray-400 mt-1 text-sm font-medium">Monitoring your performance for
+                    the last 30 days</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full lg:w-auto">
+                <!-- View Toggle -->
+                <div
+                    class="flex items-center gap-2 bg-white dark:bg-white/5 p-1.5 rounded-xl shadow-sm border border-[#f0f4f2] dark:border-white/10 w-full sm:w-auto overflow-x-auto">
+                    <button
+                        class="view-toggle active flex-shrink-0 h-10 px-4 rounded-lg bg-primary text-background-dark text-sm font-bold shadow-sm transition-all"
+                        data-view="default">
+                        Default View
+                    </button>
+                    <button
+                        class="view-toggle flex-shrink-0 h-10 px-4 rounded-lg text-[#61896f] dark:text-gray-400 text-sm font-medium hover:text-primary transition-colors"
+                        data-view="weekly">
+                        Weekly
+                    </button>
+                    <button
+                        class="view-toggle flex-shrink-0 h-10 px-4 rounded-lg text-[#61896f] dark:text-gray-400 text-sm font-medium hover:text-primary transition-colors"
+                        data-view="monthly">
+                        Monthly
+                    </button>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button
+                        class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 h-10 bg-primary text-background-dark rounded-lg text-sm font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform active:scale-95">
+                        <i class="bi bi-download text-lg"></i>
+                        Export
+                    </button>
+                    <button
+                        class="flex items-center justify-center size-10 bg-white dark:bg-white/10 border border-[#f0f4f2] dark:border-white/10 rounded-lg text-[#111813] dark:text-white hover:border-primary transition-colors">
+                        <i class="bi bi-funnel text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metric Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+
+            <!-- Total Sales Card (Primary Dark) -->
+            <div
+                class="bg-navy-dark dark:bg-black p-6 rounded-2xl shadow-xl flex flex-col justify-between relative overflow-hidden group">
+                <div
+                    class="absolute -right-4 -top-4 size-32 bg-primary/20 rounded-full blur-3xl transition-all group-hover:bg-primary/30">
+                </div>
+                <div class="relative z-10">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-white/60 text-sm font-medium uppercase tracking-wider">Total Sales</span>
+                        <div class="size-8 rounded-lg bg-white/10 flex items-center justify-center text-primary">
+                            <i class="bi bi-credit-card text-lg"></i>
+                        </div>
+                    </div>
+                    <p class="text-white text-3xl font-black mb-1">$487,592</p>
+                    <p class="text-primary text-xs font-bold flex items-center gap-1">
+                        <i class="bi bi-graph-up-arrow text-sm"></i>
+                        +12.5% from last month
+                    </p>
+                </div>
+                <div class="mt-6 pt-6 border-t border-white/10 relative z-10">
+                    <div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                        <div class="h-full bg-primary rounded-full" style="width: 75%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Purchase Card -->
+            <div
+                class="bg-white dark:bg-white/5 p-6 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10 flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <span
+                            class="text-[#61896f] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">Total
+                            Purchase</span>
+                        <div class="size-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                            <i class="bi bi-cart text-lg"></i>
+                        </div>
+                    </div>
+                    <p class="text-[#111813] dark:text-white text-3xl font-black mb-1">$240,548</p>
+                    <p class="text-red-500 text-xs font-bold flex items-center gap-1">
+                        <i class="bi bi-graph-down-arrow text-sm"></i>
+                        -2.4% vs last week
+                    </p>
+                </div>
+                <div class="mt-6">
+                    <div class="flex items-end justify-between gap-1 h-12">
+                        <div class="w-2 bg-primary/20 rounded-t-sm h-1/2"></div>
+                        <div class="w-2 bg-primary/20 rounded-t-sm h-3/4"></div>
+                        <div class="w-2 bg-primary/40 rounded-t-sm h-2/3"></div>
+                        <div class="w-2 bg-primary/30 rounded-t-sm h-1/2"></div>
+                        <div class="w-2 bg-primary/50 rounded-t-sm h-full"></div>
+                        <div class="w-2 bg-primary/40 rounded-t-sm h-2/3"></div>
+                        <div class="w-2 bg-primary rounded-t-sm h-[90%]"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Growth Card -->
+            <div
+                class="bg-white dark:bg-white/5 p-6 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10 flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start mb-2">
+                        <span
+                            class="text-[#61896f] dark:text-gray-400 text-sm font-medium uppercase tracking-wider">User
+                            Growth</span>
+                        <span class="text-primary font-bold text-xs">+84%</span>
+                    </div>
+                    <p class="text-[#111813] dark:text-white text-3xl font-black mb-4">4,290</p>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between text-[10px] font-bold text-[#61896f] dark:text-gray-400">
+                        <span>MONTHLY GOAL</span>
+                        <span>5,000 USERS</span>
+                    </div>
+                    <div class="h-2 w-full bg-[#f0f4f2] dark:bg-white/10 rounded-full overflow-hidden">
+                        <div class="h-full bg-primary rounded-full transition-all duration-1000" style="width: 84%">
+                        </div>
+                    </div>
+                    <div class="flex -space-x-2">
+                        <div class="size-6 rounded-full border-2 border-white dark:border-background-dark bg-gray-300">
+                        </div>
+                        <div class="size-6 rounded-full border-2 border-white dark:border-background-dark bg-gray-400">
+                        </div>
+                        <div class="size-6 rounded-full border-2 border-white dark:border-background-dark bg-gray-500">
+                        </div>
+                        <div
+                            class="size-6 rounded-full border-2 border-white dark:border-background-dark bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-[8px] font-bold">
+                            +12</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Volume Gauge -->
+            <div
+                class="bg-white dark:bg-white/5 p-6 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10 flex flex-col items-center justify-center text-center">
+                <div class="relative size-28 mb-4">
+                    <svg class="size-full transform -rotate-90" viewBox="0 0 36 36">
+                        <path class="text-[#f0f4f2] dark:text-white/5"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                            fill="none" stroke="currentColor" stroke-dasharray="100, 100" stroke-width="3"></path>
+                        <path class="text-primary"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                            fill="none" stroke="currentColor" stroke-dasharray="65, 100" stroke-linecap="round"
+                            stroke-width="3"></path>
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span class="text-2xl font-black text-[#111813] dark:text-white">120</span>
+                    </div>
+                </div>
+                <p class="text-[#111813] dark:text-white text-sm font-bold">New Customers</p>
+                <p class="text-[#61896f] dark:text-gray-400 text-xs font-medium mt-1">Acquired Today</p>
+            </div>
+
+        </div>
+
+        <!-- Charts & Lists Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- Weekly Satisfaction Chart -->
+            <div
+                class="lg:col-span-2 bg-white dark:bg-white/5 p-6 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                    <div>
+                        <h3 class="text-[#111813] dark:text-white text-lg font-bold">Weekly Satisfaction</h3>
+                        <p class="text-xs text-[#61896f] dark:text-gray-400">Customer feedback trends</p>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="flex items-center gap-1.5 text-xs font-medium">
+                            <div class="size-2 bg-primary rounded-full"></div>
+                            <span>Satisfied</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 text-xs font-medium">
+                            <div class="size-2 bg-[#f0f4f2] dark:bg-white/20 rounded-full"></div>
+                            <span>Neutral</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-end justify-between h-64 px-2 sm:px-4 gap-2 sm:gap-4 overflow-x-auto">
+                    <!-- Mon -->
+                    <div class="flex-1 min-w-[40px] flex flex-col items-center gap-3">
+                        <div class="w-full flex flex-col-reverse gap-1 h-48">
+                            <div class="bg-primary rounded-lg w-full h-[60%]"></div>
+                            <div class="bg-[#f0f4f2] dark:bg-white/10 rounded-lg w-full h-[20%]"></div>
+                        </div>
+                        <span class="text-xs font-medium text-[#61896f]">Mon</span>
+                    </div>
+                    <!-- Tue -->
+                    <div class="flex-1 min-w-[40px] flex flex-col items-center gap-3">
+                        <div class="w-full flex flex-col-reverse gap-1 h-48">
+                            <div class="bg-primary rounded-lg w-full h-[80%]"></div>
+                            <div class="bg-[#f0f4f2] dark:bg-white/10 rounded-lg w-full h-[10%]"></div>
+                        </div>
+                        <span class="text-xs font-medium text-[#61896f]">Tue</span>
+                    </div>
+                    <!-- Wed -->
+                    <div class="flex-1 min-w-[40px] flex flex-col items-center gap-3">
+                        <div class="w-full flex flex-col-reverse gap-1 h-48">
+                            <div class="bg-primary rounded-lg w-full h-[45%]"></div>
+                            <div class="bg-[#f0f4f2] dark:bg-white/10 rounded-lg w-full h-[30%]"></div>
+                        </div>
+                        <span class="text-xs font-medium text-[#61896f]">Wed</span>
+                    </div>
+                    <!-- Thu -->
+                    <div class="flex-1 min-w-[40px] flex flex-col items-center gap-3">
+                        <div class="w-full flex flex-col-reverse gap-1 h-48">
+                            <div class="bg-primary rounded-lg w-full h-[90%]"></div>
+                            <div class="bg-[#f0f4f2] dark:bg-white/10 rounded-lg w-full h-[5%]"></div>
+                        </div>
+                        <span class="text-xs font-medium text-[#61896f]">Thu</span>
+                    </div>
+                    <!-- Fri -->
+                    <div class="flex-1 min-w-[40px] flex flex-col items-center gap-3">
+                        <div class="w-full flex flex-col-reverse gap-1 h-48">
+                            <div class="bg-primary rounded-lg w-full h-[70%]"></div>
+                            <div class="bg-[#f0f4f2] dark:bg-white/10 rounded-lg w-full h-[15%]"></div>
+                        </div>
+                        <span class="text-xs font-medium text-[#61896f]">Fri</span>
+                    </div>
+                    <!-- Sat -->
+                    <div class="flex-1 min-w-[40px] flex flex-col items-center gap-3">
+                        <div class="w-full flex flex-col-reverse gap-1 h-48">
+                            <div class="bg-primary rounded-lg w-full h-[55%]"></div>
+                            <div class="bg-[#f0f4f2] dark:bg-white/10 rounded-lg w-full h-[25%]"></div>
+                        </div>
+                        <span class="text-xs font-medium text-[#61896f]">Sat</span>
+                    </div>
+                    <!-- Sun -->
+                    <div class="flex-1 min-w-[40px] flex flex-col items-center gap-3">
+                        <div class="w-full flex flex-col-reverse gap-1 h-48">
+                            <div class="bg-primary rounded-lg w-full h-[85%]"></div>
+                            <div class="bg-[#f0f4f2] dark:bg-white/10 rounded-lg w-full h-[10%]"></div>
+                        </div>
+                        <span class="text-xs font-medium text-[#61896f]">Sun</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders by Country -->
+            <div
+                class="bg-white dark:bg-white/5 p-6 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10">
+                <h3 class="text-[#111813] dark:text-white text-lg font-bold mb-1">Orders by Country</h3>
+                <p class="text-xs text-[#61896f] dark:text-gray-400 mb-6">Global sales distribution</p>
+
+                <div class="aspect-square bg-slate-50 dark:bg-white/5 rounded-xl mb-6 relative overflow-hidden">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-40">
+                        <i class="bi bi-globe text-[140px] text-primary"></i>
+                    </div>
+                    <div class="absolute top-1/4 left-1/4 animate-bounce text-primary"><i
+                            class="bi bi-geo-alt-fill"></i></div>
+                    <div class="absolute top-1/2 right-1/4 animate-pulse text-primary"><i
+                            class="bi bi-geo-alt-fill"></i></div>
+                    <div class="absolute bottom-1/3 left-1/2 text-primary/60"><i class="bi bi-geo-alt-fill"></i></div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="size-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">
+                                🇺🇸</div>
+                            <span class="text-sm font-bold">United States</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-sm font-black">42%</span>
+                            <div class="w-24 h-1 bg-[#f0f4f2] dark:bg-white/10 rounded-full mt-1">
+                                <div class="bg-primary h-full rounded-full transition-all duration-1000"
+                                    style="width: 42%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="size-6 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
+                                🇫🇷</div>
+                            <span class="text-sm font-bold">France</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-sm font-black">28%</span>
+                            <div class="w-24 h-1 bg-[#f0f4f2] dark:bg-white/10 rounded-full mt-1">
+                                <div class="bg-primary h-full rounded-full transition-all duration-1000"
+                                    style="width: 28%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Top Selling Products -->
+        <div
+            class="mt-8 bg-white dark:bg-white/5 p-6 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10 overflow-hidden">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                <h3 class="text-[#111813] dark:text-white text-lg font-bold">Top Selling Products</h3>
+                <button class="text-primary text-sm font-bold hover:underline">View All Products</button>
+            </div>
+
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left min-w-[600px]">
+                    <thead>
+                        <tr
+                            class="border-b border-[#f0f4f2] dark:border-white/10 text-[#61896f] text-xs font-bold uppercase tracking-wider">
+                            <th class="pb-4 pr-4">Product Details</th>
+                            <th class="pb-4 px-4">Sales</th>
+                            <th class="pb-4 px-4">Price</th>
+                            <th class="pb-4 px-4">Revenue</th>
+                            <th class="pb-4 pl-4 text-right">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#f0f4f2] dark:divide-white/10">
+                        <!-- Product 1 -->
+                        <tr class="group hover:bg-background-light dark:hover:bg-white/5 transition-colors">
+                            <td class="py-4 pr-4">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="size-12 rounded-lg bg-cover bg-center border border-[#f0f4f2] dark:border-white/10 overflow-hidden flex-shrink-0">
+                                        <img src="images/product1.png" alt="Jersey graphic short tee"
+                                            class="w-full h-full object-cover" />
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-[#111813] dark:text-white">Jersey graphic short
+                                            tee</p>
+                                        <p class="text-[10px] text-[#61896f]">Fashion • 3 Variants</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-4 px-4">
+                                <p class="text-sm font-bold">1,420</p>
+                            </td>
+                            <td class="py-4 px-4">
+                                <p class="text-sm font-medium text-[#61896f]">$42.00</p>
+                            </td>
+                            <td class="py-4 px-4">
+                                <p class="text-sm font-bold">$59,640</p>
+                            </td>
+                            <td class="py-4 pl-4 text-right">
+                                <span
+                                    class="inline-flex items-center px-2 py-1 rounded-md bg-primary/10 text-primary text-[10px] font-black uppercase">In
+                                    Stock</span>
+                            </td>
+                        </tr>
+                        <!-- Product 2 -->
+                        <tr class="group hover:bg-background-light dark:hover:bg-white/5 transition-colors">
+                            <td class="py-4 pr-4">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="size-12 rounded-lg bg-cover bg-center border border-[#f0f4f2] dark:border-white/10 overflow-hidden flex-shrink-0">
+                                        <img src="images/product2.png" alt="Minimalist Canvas Tote"
+                                            class="w-full h-full object-cover" />
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-[#111813] dark:text-white">Minimalist Canvas
+                                            Tote</p>
+                                        <p class="text-[10px] text-[#61896f]">Accessories • 2 Variants</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-4 px-4">
+                                <p class="text-sm font-bold">980</p>
+                            </td>
+                            <td class="py-4 px-4">
+                                <p class="text-sm font-medium text-[#61896f]">$28.00</p>
+                            </td>
+                            <td class="py-4 px-4">
+                                <p class="text-sm font-bold">$27,440</p>
+                            </td>
+                            <td class="py-4 pl-4 text-right">
+                                <span
+                                    class="inline-flex items-center px-2 py-1 rounded-md bg-amber-500/10 text-amber-500 text-[10px] font-black uppercase">Low
+                                    Stock</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="container-custom mx-auto max-w-[1440px] py-8 border-t border-[#f0f4f2] dark:border-white/10 mt-12">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-[#61896f] dark:text-gray-400 text-xs font-medium text-center md:text-left">© 2024 OSalean
+                Management System. All rights reserved.</p>
+            <div class="flex flex-wrap justify-center gap-4 md:gap-6">
+                <a class="text-[#61896f] dark:text-gray-400 text-xs font-medium hover:text-primary transition-colors"
+                    href="#">Privacy Policy</a>
+                <a class="text-[#61896f] dark:text-gray-400 text-xs font-medium hover:text-primary transition-colors"
+                    href="#">Terms of Service</a>
+                <a class="text-[#61896f] dark:text-gray-400 text-xs font-medium hover:text-primary transition-colors"
+                    href="#">Help Center</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/6281234567890?text=Halo%20OSalean,%20saya%20ingin%20bertanya" target="_blank"
+        class="floating-wa">
+        <div
+            class="size-14 bg-[#25D366] rounded-full shadow-lg flex items-center justify-center text-white hover:scale-110 transition-transform">
+            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+            </svg>
+        </div>
+    </a>
+
+    <!-- Floating Scroll to Top Button -->
+    <button id="scrollToTop" class="floating-up">
+        <div
+            class="size-12 bg-primary rounded-full shadow-lg flex items-center justify-center text-background-dark hover:scale-110 transition-transform">
+            <i class="bi bi-arrow-up text-2xl"></i>
+        </div>
+    </button>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+        const closeMobileMenu = document.getElementById('closeMobileMenu');
+
+        function openMobileMenu() {
+            mobileMenu.classList.add('active');
+            mobileMenuOverlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileMenuFunc() {
+            mobileMenu.classList.remove('active');
+            mobileMenuOverlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        mobileMenuBtn.addEventListener('click', openMobileMenu);
+        closeMobileMenu.addEventListener('click', closeMobileMenuFunc);
+        mobileMenuOverlay.addEventListener('click', closeMobileMenuFunc);
+
+        // View Toggle
+        const viewToggles = document.querySelectorAll('.view-toggle');
+        viewToggles.forEach(toggle => {
+            toggle.addEventListener('click', function () {
+                viewToggles.forEach(t => {
+                    t.classList.remove('active', 'bg-primary', 'text-background-dark', 'shadow-sm');
+                    t.classList.add('text-[#61896f]', 'dark:text-gray-400');
+                });
+                this.classList.add('active', 'bg-primary', 'text-background-dark', 'shadow-sm');
+                this.classList.remove('text-[#61896f]', 'dark:text-gray-400');
+
+                const view = this.getAttribute('data-view');
+                console.log('Switched to view:', view);
+            });
+        });
+
+        // Scroll to Top Button
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+
+        window.addEventListener('scroll', function () {
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.classList.add('show');
+            } else {
+                scrollToTopBtn.classList.remove('show');
+            }
+        });
+
+        scrollToTopBtn.addEventListener('click', function () {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Export Button
+        document.querySelector('button:has(.material-symbols-outlined:contains("download"))').addEventListener('click', function () {
+            alert('Export functionality will download your sales data. This is a demo - connect to your backend API.');
+        });
+
+        // Prevent horizontal scroll on mobile
+        document.addEventListener('touchmove', function (e) {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    </script>
+
+</body>
+
+</html>

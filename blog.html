@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>OSalean - Blog & Insights</title>
+    <meta name="description" content="OSalean Blog - Latest insights and updates about e-commerce and business" />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec5b",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102216",
+                        "navy-dark": "#0a192f",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        .floating-wa {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            z-index: 999;
+            animation: pulse 2s infinite;
+        }
+
+        .floating-up {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999;
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 0.3s ease;
+        }
+
+        .floating-up.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        * {
+            max-width: 100%;
+        }
+
+        .container-custom {
+            width: 100%;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .container-custom {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-[#111813] dark:text-white font-display min-h-screen">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#f0f4f2] dark:border-white/10">
+        <div class="container-custom mx-auto max-w-[1440px]">
+            <div class="flex items-center justify-between py-3">
+                <div class="flex items-center gap-2">
+                    <img src="images/logo.png" alt="OSalean Logo" class="h-8 w-8 object-contain" />
+                    <h2 class="text-[#111813] dark:text-white text-xl font-black tracking-tight">OSalean</h2>
+                </div>
+
+                <nav class="hidden md:flex items-center gap-8">
+                    <a class="text-[#61896f] dark:text-gray-400 text-sm font-medium hover:text-primary transition-colors"
+                        href="index.html">Dashboard</a>
+                    <a class="text-[#61896f] dark:text-gray-400 text-sm font-medium hover:text-primary transition-colors"
+                        href="analytics.html">Analytics</a>
+                    <a class="text-[#61896f] dark:text-gray-400 text-sm font-medium hover:text-primary transition-colors"
+                        href="invoice.html">Invoice</a>
+                    <a class="text-[#61896f] dark:text-gray-400 text-sm font-medium hover:text-primary transition-colors"
+                        href="products.html">Products</a>
+                    <a class="text-primary text-sm font-bold border-b-2 border-primary pb-1" href="blog.html">Blog</a>
+                </nav>
+
+                <div class="flex items-center gap-4">
+                    <div class="hidden sm:flex gap-2">
+                        <button
+                            class="size-10 flex items-center justify-center rounded-lg bg-[#f0f4f2] dark:bg-white/5 text-[#111813] dark:text-white hover:bg-primary/20 transition-colors">
+                            <i class="bi bi-bell text-[20px]"></i>
+                        </button>
+                        <button
+                            class="size-10 flex items-center justify-center rounded-lg bg-[#f0f4f2] dark:bg-white/5 text-[#111813] dark:text-white hover:bg-primary/20 transition-colors">
+                            <i class="bi bi-gear text-[20px]"></i>
+                        </button>
+                    </div>
+
+                    <div class="hidden sm:flex items-center gap-3 pl-4 border-l border-[#f0f4f2] dark:border-white/10">
+                        <div class="text-right hidden lg:block">
+                            <p class="text-xs font-bold text-[#111813] dark:text-white leading-none">Kim Minchae</p>
+                            <p class="text-[10px] text-[#61896f] dark:text-gray-400 mt-1">Store Owner</p>
+                        </div>
+                        <div class="size-10 rounded-full bg-cover bg-center border-2 border-primary overflow-hidden">
+                            <img src="images/profile.png" alt="Profile photo" class="w-full h-full object-cover" />
+                        </div>
+                    </div>
+
+                    <button id="mobileMenuBtn"
+                        class="md:hidden size-10 flex items-center justify-center rounded-lg bg-[#f0f4f2] dark:bg-white/5 text-[#111813] dark:text-white">
+                        <i class="bi bi-list text-[24px]"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenuOverlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu"
+        class="mobile-menu fixed top-0 left-0 h-full w-64 bg-white dark:bg-background-dark z-50 shadow-xl md:hidden">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-2">
+                    <img src="images/logo.png" alt="OSalean Logo" class="h-8 w-8 object-contain" />
+                    <h2 class="text-[#111813] dark:text-white text-xl font-black">OSalean</h2>
+                </div>
+                <button id="closeMobileMenu"
+                    class="size-8 flex items-center justify-center rounded-lg text-[#111813] dark:text-white">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <div class="flex items-center gap-3 pb-6 mb-6 border-b border-[#f0f4f2] dark:border-white/10">
+                <div class="size-12 rounded-full bg-cover bg-center border-2 border-primary overflow-hidden">
+                    <img src="images/profile.png" alt="Profile photo" class="w-full h-full object-cover" />
+                </div>
+                <div>
+                    <p class="text-sm font-bold text-[#111813] dark:text-white">Kim Minchae</p>
+                    <p class="text-xs text-[#61896f] dark:text-gray-400">Store Owner</p>
+                </div>
+            </div>
+
+            <nav class="flex flex-col gap-2">
+                <a href="index.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#61896f] dark:text-gray-400 hover:bg-[#f0f4f2] dark:hover:bg-white/5">
+                    <i class="bi bi-speedometer2"></i>
+                    Dashboard
+                </a>
+                <a href="analytics.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#61896f] dark:text-gray-400 hover:bg-[#f0f4f2] dark:hover:bg-white/5">
+                    <i class="bi bi-graph-up"></i>
+                    Analytics
+                </a>
+                <a href="invoice.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#61896f] dark:text-gray-400 hover:bg-[#f0f4f2] dark:hover:bg-white/5">
+                    <i class="bi bi-receipt"></i>
+                    Invoice
+                </a>
+                <a href="products.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#61896f] dark:text-gray-400 hover:bg-[#f0f4f2] dark:hover:bg-white/5">
+                    <i class="bi bi-box-seam"></i>
+                    Products
+                </a>
+                <a href="blog.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary/10 text-primary font-bold">
+                    <i class="bi bi-file-text"></i>
+                    Blog
+                </a>
+            </nav>
+
+            <div class="mt-6 pt-6 border-t border-[#f0f4f2] dark:border-white/10">
+                <div class="flex gap-2">
+                    <button
+                        class="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-[#f0f4f2] dark:bg-white/5 text-[#111813] dark:text-white">
+                        <i class="bi bi-bell text-[20px]"></i>
+                    </button>
+                    <button
+                        class="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-[#f0f4f2] dark:bg-white/5 text-[#111813] dark:text-white">
+                        <i class="bi bi-gear text-[20px]"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container-custom mx-auto max-w-[1440px] py-8">
+
+        <!-- Page Header -->
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
+            <div>
+                <h1 class="text-[#111813] dark:text-white text-3xl md:text-4xl font-black tracking-tight">Blog &
+                    Insights</h1>
+                <p class="text-[#61896f] dark:text-gray-400 mt-1 text-sm font-medium">Latest updates and articles about
+                    e-commerce</p>
+            </div>
+
+            <button
+                class="flex items-center gap-2 px-6 h-12 bg-primary text-background-dark rounded-lg text-sm font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform active:scale-95">
+                <i class="bi bi-plus-lg text-lg"></i>
+                New Article
+            </button>
+        </div>
+
+        <!-- Search and Filter -->
+        <div
+            class="bg-white dark:bg-white/5 p-4 md:p-6 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10 mb-8">
+            <div class="flex flex-col lg:flex-row gap-4">
+
+                <!-- Search -->
+                <div class="flex-1">
+                    <div class="relative">
+                        <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-[#61896f]"></i>
+                        <input type="text" id="searchArticle" placeholder="Search articles..."
+                            class="w-full h-12 pl-12 pr-4 rounded-lg bg-[#f0f4f2] dark:bg-white/5 border border-transparent focus:border-primary outline-none text-sm" />
+                    </div>
+                </div>
+
+                <!-- Category Filter -->
+                <select id="categoryFilter"
+                    class="h-12 px-4 rounded-lg bg-[#f0f4f2] dark:bg-white/5 border border-transparent focus:border-primary outline-none text-sm">
+                    <option value="all">All Categories</option>
+                    <option value="ecommerce">E-Commerce</option>
+                    <option value="marketing">Marketing</option>
+                    <option value="business">Business Tips</option>
+                    <option value="technology">Technology</option>
+                </select>
+
+            </div>
+        </div>
+
+        <!-- Featured Article -->
+        <div
+            class="bg-white dark:bg-white/5 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10 overflow-hidden mb-8 group hover:shadow-xl transition-all">
+            <div class="grid md:grid-cols-2 gap-0">
+                <div class="aspect-video md:aspect-auto bg-[#f0f4f2] dark:bg-white/5 relative overflow-hidden">
+                    <img src="images/blog1.png" alt="Featured Article"
+                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                    <span
+                        class="absolute top-4 left-4 px-3 py-1 bg-primary text-background-dark text-xs font-black rounded-full">FEATURED</span>
+                </div>
+                <div class="p-6 md:p-8 flex flex-col justify-center">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span
+                            class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full">E-Commerce</span>
+                        <span class="text-xs text-[#61896f]">5 min read</span>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-black text-[#111813] dark:text-white mb-3">
+                        10 Strategies to Boost Your Online Sales in 2024
+                    </h2>
+                    <p class="text-[#61896f] dark:text-gray-400 text-sm mb-6">
+                        Discover proven techniques to increase your e-commerce revenue and grow your business with these
+                        actionable strategies.
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="size-10 rounded-full bg-primary/10 overflow-hidden">
+                                <img src="images/profile.png" alt="Author" class="w-full h-full object-cover" />
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-[#111813] dark:text-white">Kim Minchae</p>
+                                <p class="text-[10px] text-[#61896f]">Jan 28, 2024</p>
+                            </div>
+                        </div>
+                        <a href="blog-boost-online-sales-2024.html"
+                            class="flex items-center gap-2 px-4 h-10 bg-primary text-background-dark rounded-lg text-sm font-bold hover:scale-[1.02] transition-transform">
+                            Read More
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blog Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="blogGrid">
+
+            <!-- Blog Card 1 -->
+            <div class="blog-card bg-white dark:bg-white/5 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10 overflow-hidden group hover:shadow-xl transition-all"
+                data-category="marketing">
+                <div class="aspect-video bg-[#f0f4f2] dark:bg-white/5 relative overflow-hidden">
+                    <img src="images/blog2.png" alt="Marketing Tips"
+                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span
+                            class="px-3 py-1 bg-blue-500/10 text-blue-500 text-xs font-bold rounded-full">Marketing</span>
+                        <span class="text-xs text-[#61896f]">4 min read</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-[#111813] dark:text-white mb-2 line-clamp-2">
+                        Social Media Marketing: Best Practices for 2024
+                    </h3>
+                    <p class="text-sm text-[#61896f] dark:text-gray-400 mb-4 line-clamp-2">
+                        Learn how to leverage social media platforms to reach your target audience and drive engagement.
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i class="bi bi-calendar3 text-[#61896f] text-sm"></i>
+                            <span class="text-xs text-[#61896f]">Jan 25, 2024</span>
+                        </div>
+                        <a href="blog-social-media-marketing-2024.html"
+                            class="flex items-center gap-1 text-primary text-sm font-bold hover:gap-2 transition-all">
+                            Read
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blog Card 2 -->
+            <div class="blog-card bg-white dark:bg-white/5 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10 overflow-hidden group hover:shadow-xl transition-all"
+                data-category="business">
+                <div class="aspect-video bg-[#f0f4f2] dark:bg-white/5 relative overflow-hidden">
+                    <img src="images/blog3.png" alt="Business Tips"
+                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="px-3 py-1 bg-purple-500/10 text-purple-500 text-xs font-bold rounded-full">Business
+                            Tips</span>
+                        <span class="text-xs text-[#61896f]">6 min read</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-[#111813] dark:text-white mb-2 line-clamp-2">
+                        How to Scale Your Small Business Effectively
+                    </h3>
+                    <p class="text-sm text-[#61896f] dark:text-gray-400 mb-4 line-clamp-2">
+                        Essential tips and strategies for growing your business without compromising quality or service.
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i class="bi bi-calendar3 text-[#61896f] text-sm"></i>
+                            <span class="text-xs text-[#61896f]">Jan 22, 2024</span>
+                        </div>
+                        <a href="blog-boost-online-sales-2024.html"
+                            class="flex items-center gap-1 text-primary text-sm font-bold hover:gap-2 transition-all">
+                            Read
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blog Card 3 -->
+            <div class="blog-card bg-white dark:bg-white/5 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10 overflow-hidden group hover:shadow-xl transition-all"
+                data-category="technology">
+                <div class="aspect-video bg-[#f0f4f2] dark:bg-white/5 relative overflow-hidden">
+                    <div
+                        class="w-full h-full bg-gradient-to-br from-primary/20 to-blue-500/20 flex items-center justify-center">
+                        <i class="bi bi-laptop text-6xl text-primary"></i>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span
+                            class="px-3 py-1 bg-orange-500/10 text-orange-500 text-xs font-bold rounded-full">Technology</span>
+                        <span class="text-xs text-[#61896f]">7 min read</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-[#111813] dark:text-white mb-2 line-clamp-2">
+                        The Future of AI in E-Commerce
+                    </h3>
+                    <p class="text-sm text-[#61896f] dark:text-gray-400 mb-4 line-clamp-2">
+                        Explore how artificial intelligence is transforming the online shopping experience and business
+                        operations.
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i class="bi bi-calendar3 text-[#61896f] text-sm"></i>
+                            <span class="text-xs text-[#61896f]">Jan 20, 2024</span>
+                        </div>
+                        <a href="blog-social-media-marketing-2024.html"
+                            class="flex items-center gap-1 text-primary text-sm font-bold hover:gap-2 transition-all">
+                            Read
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blog Card 4 -->
+            <div class="blog-card bg-white dark:bg-white/5 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10 overflow-hidden group hover:shadow-xl transition-all"
+                data-category="ecommerce">
+                <div class="aspect-video bg-[#f0f4f2] dark:bg-white/5 relative overflow-hidden">
+                    <div
+                        class="w-full h-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
+                        <i class="bi bi-cart-check text-6xl text-purple-500"></i>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span
+                            class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full">E-Commerce</span>
+                        <span class="text-xs text-[#61896f]">5 min read</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-[#111813] dark:text-white mb-2 line-clamp-2">
+                        Optimizing Your Checkout Process for Higher Conversions
+                    </h3>
+                    <p class="text-sm text-[#61896f] dark:text-gray-400 mb-4 line-clamp-2">
+                        Reduce cart abandonment and increase sales with these proven checkout optimization techniques.
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i class="bi bi-calendar3 text-[#61896f] text-sm"></i>
+                            <span class="text-xs text-[#61896f]">Jan 18, 2024</span>
+                        </div>
+                        <a href="blog-social-media-marketing-2024.html"
+                            class="flex items-center gap-1 text-primary text-sm font-bold hover:gap-2 transition-all">
+                            Read
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blog Card 5 -->
+            <div class="blog-card bg-white dark:bg-white/5 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10 overflow-hidden group hover:shadow-xl transition-all"
+                data-category="marketing">
+                <div class="aspect-video bg-[#f0f4f2] dark:bg-white/5 relative overflow-hidden">
+                    <div
+                        class="w-full h-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center">
+                        <i class="bi bi-megaphone text-6xl text-blue-500"></i>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span
+                            class="px-3 py-1 bg-blue-500/10 text-blue-500 text-xs font-bold rounded-full">Marketing</span>
+                        <span class="text-xs text-[#61896f]">8 min read</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-[#111813] dark:text-white mb-2 line-clamp-2">
+                        Email Marketing Strategies That Actually Work
+                    </h3>
+                    <p class="text-sm text-[#61896f] dark:text-gray-400 mb-4 line-clamp-2">
+                        Build effective email campaigns that engage your audience and drive conversions.
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i class="bi bi-calendar3 text-[#61896f] text-sm"></i>
+                            <span class="text-xs text-[#61896f]">Jan 15, 2024</span>
+                        </div>
+                        <a href="blog-boost-online-sales-2024.html"
+                            class="flex items-center gap-1 text-primary text-sm font-bold hover:gap-2 transition-all">
+                            Read
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blog Card 6 -->
+            <div class="blog-card bg-white dark:bg-white/5 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10 overflow-hidden group hover:shadow-xl transition-all"
+                data-category="business">
+                <div class="aspect-video bg-[#f0f4f2] dark:bg-white/5 relative overflow-hidden">
+                    <div
+                        class="w-full h-full bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center">
+                        <i class="bi bi-graph-up-arrow text-6xl text-green-500"></i>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="px-3 py-1 bg-purple-500/10 text-purple-500 text-xs font-bold rounded-full">Business
+                            Tips</span>
+                        <span class="text-xs text-[#61896f]">6 min read</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-[#111813] dark:text-white mb-2 line-clamp-2">
+                        Customer Retention: Building Long-Term Relationships
+                    </h3>
+                    <p class="text-sm text-[#61896f] dark:text-gray-400 mb-4 line-clamp-2">
+                        Learn how to keep your customers coming back and turn them into loyal brand advocates.
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i class="bi bi-calendar3 text-[#61896f] text-sm"></i>
+                            <span class="text-xs text-[#61896f]">Jan 12, 2024</span>
+                        </div>
+                        <a href="blog-social-media-marketing-2024.html"
+                            class="flex items-center gap-1 text-primary text-sm font-bold hover:gap-2 transition-all">
+                            Read
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="container-custom mx-auto max-w-[1440px] py-8 border-t border-[#f0f4f2] dark:border-white/10 mt-12">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-[#61896f] dark:text-gray-400 text-xs font-medium text-center md:text-left">© 2024 OSalean
+                Management System. All rights reserved.</p>
+            <div class="flex flex-wrap justify-center gap-4 md:gap-6">
+                <a class="text-[#61896f] dark:text-gray-400 text-xs font-medium hover:text-primary transition-colors"
+                    href="#">Privacy Policy</a>
+                <a class="text-[#61896f] dark:text-gray-400 text-xs font-medium hover:text-primary transition-colors"
+                    href="#">Terms of Service</a>
+                <a class="text-[#61896f] dark:text-gray-400 text-xs font-medium hover:text-primary transition-colors"
+                    href="#">Help Center</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/6281234567890?text=Halo%20OSalean,%20saya%20ingin%20bertanya%20tentang%20artikel"
+        target="_blank" class="floating-wa">
+        <div
+            class="size-14 bg-[#25D366] rounded-full shadow-lg flex items-center justify-center text-white hover:scale-110 transition-transform">
+            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+            </svg>
+        </div>
+    </a>
+
+    <!-- Floating Scroll to Top Button -->
+    <button id="scrollToTop" class="floating-up">
+        <div
+            class="size-12 bg-primary rounded-full shadow-lg flex items-center justify-center text-background-dark hover:scale-110 transition-transform">
+            <i class="bi bi-arrow-up text-2xl"></i>
+        </div>
+    </button>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+        const closeMobileMenu = document.getElementById('closeMobileMenu');
+
+        function openMobileMenu() {
+            mobileMenu.classList.add('active');
+            mobileMenuOverlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileMenuFunc() {
+            mobileMenu.classList.remove('active');
+            mobileMenuOverlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        mobileMenuBtn.addEventListener('click', openMobileMenu);
+        closeMobileMenu.addEventListener('click', closeMobileMenuFunc);
+        mobileMenuOverlay.addEventListener('click', closeMobileMenuFunc);
+
+        // Search Functionality
+        const searchInput = document.getElementById('searchArticle');
+        const blogCards = document.querySelectorAll('.blog-card');
+
+        searchInput.addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase();
+
+            blogCards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Category Filter
+        const categoryFilter = document.getElementById('categoryFilter');
+
+        categoryFilter.addEventListener('change', function () {
+            const selectedCategory = this.value;
+
+            blogCards.forEach(card => {
+                const cardCategory = card.getAttribute('data-category');
+                if (selectedCategory === 'all' || cardCategory === selectedCategory) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Read More Buttons
+        document.querySelectorAll('button').forEach(btn => {
+            if (btn.textContent.includes('Read')) {
+                btn.addEventListener('click', function () {
+                    const articleTitle = this.closest('.blog-card, .bg-white').querySelector('h2, h3').textContent;
+                    const message = `Halo, saya tertarik membaca artikel: ${articleTitle}`;
+                    const whatsappUrl = `https://wa.me/6281234567890?text=${encodeURIComponent(message)}`;
+                    window.open(whatsappUrl, '_blank');
+                });
+            }
+        });
+
+        // Scroll to Top Button
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+
+        window.addEventListener('scroll', function () {
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.classList.add('show');
+            } else {
+                scrollToTopBtn.classList.remove('show');
+            }
+        });
+
+        scrollToTopBtn.addEventListener('click', function () {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+
+</body>
+
+</html>

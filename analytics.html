@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>OSalean - Analytics Dashboard</title>
+    <meta name="description" content="OSalean Analytics - Deep dive into your business metrics and performance" />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec5b",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102216",
+                        "navy-dark": "#0a192f",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        .floating-wa {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            z-index: 999;
+            animation: pulse 2s infinite;
+        }
+
+        .floating-up {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999;
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 0.3s ease;
+        }
+
+        .floating-up.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        * {
+            max-width: 100%;
+        }
+
+        .container-custom {
+            width: 100%;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .container-custom {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-[#111813] dark:text-white font-display min-h-screen">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-[#f0f4f2] dark:border-white/10">
+        <div class="container-custom mx-auto max-w-[1440px]">
+            <div class="flex items-center justify-between py-3">
+                <div class="flex items-center gap-2">
+                    <img src="images/logo.png" alt="OSalean Logo" class="h-8 w-8 object-contain" />
+                    <h2 class="text-[#111813] dark:text-white text-xl font-black tracking-tight">OSalean</h2>
+                </div>
+
+                <nav class="hidden md:flex items-center gap-8">
+                    <a class="text-[#61896f] dark:text-gray-400 text-sm font-medium hover:text-primary transition-colors"
+                        href="index.html">Dashboard</a>
+                    <a class="text-primary text-sm font-bold border-b-2 border-primary pb-1"
+                        href="analytics.html">Analytics</a>
+                    <a class="text-[#61896f] dark:text-gray-400 text-sm font-medium hover:text-primary transition-colors"
+                        href="invoice.html">Invoice</a>
+                    <a class="text-[#61896f] dark:text-gray-400 text-sm font-medium hover:text-primary transition-colors"
+                        href="products.html">Products</a>
+                    <a class="text-[#61896f] dark:text-gray-400 text-sm font-medium hover:text-primary transition-colors"
+                        href="blog.html">Blog</a>
+                </nav>
+
+                <div class="flex items-center gap-4">
+                    <div class="hidden sm:flex gap-2">
+                        <button
+                            class="size-10 flex items-center justify-center rounded-lg bg-[#f0f4f2] dark:bg-white/5 text-[#111813] dark:text-white hover:bg-primary/20 transition-colors">
+                            <i class="bi bi-bell text-[20px]"></i>
+                        </button>
+                        <button
+                            class="size-10 flex items-center justify-center rounded-lg bg-[#f0f4f2] dark:bg-white/5 text-[#111813] dark:text-white hover:bg-primary/20 transition-colors">
+                            <i class="bi bi-gear text-[20px]"></i>
+                        </button>
+                    </div>
+
+                    <div class="hidden sm:flex items-center gap-3 pl-4 border-l border-[#f0f4f2] dark:border-white/10">
+                        <div class="text-right hidden lg:block">
+                            <p class="text-xs font-bold text-[#111813] dark:text-white leading-none">Kim Minchae</p>
+                            <p class="text-[10px] text-[#61896f] dark:text-gray-400 mt-1">Store Owner</p>
+                        </div>
+                        <div class="size-10 rounded-full bg-cover bg-center border-2 border-primary overflow-hidden">
+                            <img src="images/profile.png" alt="Profile photo" class="w-full h-full object-cover" />
+                        </div>
+                    </div>
+
+                    <button id="mobileMenuBtn"
+                        class="md:hidden size-10 flex items-center justify-center rounded-lg bg-[#f0f4f2] dark:bg-white/5 text-[#111813] dark:text-white">
+                        <i class="bi bi-list text-[24px]"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenuOverlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu"
+        class="mobile-menu fixed top-0 left-0 h-full w-64 bg-white dark:bg-background-dark z-50 shadow-xl md:hidden">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-2">
+                    <img src="images/logo.png" alt="OSalean Logo" class="h-8 w-8 object-contain" />
+                    <h2 class="text-[#111813] dark:text-white text-xl font-black">OSalean</h2>
+                </div>
+                <button id="closeMobileMenu"
+                    class="size-8 flex items-center justify-center rounded-lg text-[#111813] dark:text-white">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <div class="flex items-center gap-3 pb-6 mb-6 border-b border-[#f0f4f2] dark:border-white/10">
+                <div class="size-12 rounded-full bg-cover bg-center border-2 border-primary overflow-hidden">
+                    <img src="images/profile.png" alt="Profile photo" class="w-full h-full object-cover" />
+                </div>
+                <div>
+                    <p class="text-sm font-bold text-[#111813] dark:text-white">Kim Minchae</p>
+                    <p class="text-xs text-[#61896f] dark:text-gray-400">Store Owner</p>
+                </div>
+            </div>
+
+            <nav class="flex flex-col gap-2">
+                <a href="index.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#61896f] dark:text-gray-400 hover:bg-[#f0f4f2] dark:hover:bg-white/5">
+                    <i class="bi bi-speedometer2"></i>
+                    Dashboard
+                </a>
+                <a href="analytics.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary/10 text-primary font-bold">
+                    <i class="bi bi-graph-up"></i>
+                    Analytics
+                </a>
+                <a href="invoice.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#61896f] dark:text-gray-400 hover:bg-[#f0f4f2] dark:hover:bg-white/5">
+                    <i class="bi bi-receipt"></i>
+                    Invoice
+                </a>
+                <a href="products.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#61896f] dark:text-gray-400 hover:bg-[#f0f4f2] dark:hover:bg-white/5">
+                    <i class="bi bi-box-seam"></i>
+                    Products
+                </a>
+                <a href="blog.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#61896f] dark:text-gray-400 hover:bg-[#f0f4f2] dark:hover:bg-white/5">
+                    <i class="bi bi-file-text"></i>
+                    Blog
+                </a>
+            </nav>
+
+            <div class="mt-6 pt-6 border-t border-[#f0f4f2] dark:border-white/10">
+                <div class="flex gap-2">
+                    <button
+                        class="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-[#f0f4f2] dark:bg-white/5 text-[#111813] dark:text-white">
+                        <i class="bi bi-bell text-[20px]"></i>
+                    </button>
+                    <button
+                        class="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-[#f0f4f2] dark:bg-white/5 text-[#111813] dark:text-white">
+                        <i class="bi bi-gear text-[20px]"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container-custom mx-auto max-w-[1440px] py-8">
+
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-[#111813] dark:text-white text-3xl md:text-4xl font-black tracking-tight">Analytics
+                Dashboard</h1>
+            <p class="text-[#61896f] dark:text-gray-400 mt-1 text-sm font-medium">Deep insights into your business
+                performance</p>
+        </div>
+
+        <!-- Time Period Selector -->
+        <div class="flex flex-wrap gap-2 mb-8">
+            <button
+                class="period-btn active px-4 py-2 rounded-lg bg-primary text-background-dark text-sm font-bold transition-all"
+                data-period="today">Today</button>
+            <button
+                class="period-btn px-4 py-2 rounded-lg bg-white dark:bg-white/5 border border-[#f0f4f2] dark:border-white/10 text-[#61896f] dark:text-gray-400 text-sm font-medium hover:border-primary transition-all"
+                data-period="week">This Week</button>
+            <button
+                class="period-btn px-4 py-2 rounded-lg bg-white dark:bg-white/5 border border-[#f0f4f2] dark:border-white/10 text-[#61896f] dark:text-gray-400 text-sm font-medium hover:border-primary transition-all"
+                data-period="month">This Month</button>
+            <button
+                class="period-btn px-4 py-2 rounded-lg bg-white dark:bg-white/5 border border-[#f0f4f2] dark:border-white/10 text-[#61896f] dark:text-gray-400 text-sm font-medium hover:border-primary transition-all"
+                data-period="year">This Year</button>
+        </div>
+
+        <!-- Key Metrics Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+
+            <!-- Revenue Metric -->
+            <div
+                class="bg-white dark:bg-white/5 p-6 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-[#61896f] dark:text-gray-400 text-xs font-medium uppercase">Revenue</p>
+                        <p class="text-[#111813] dark:text-white text-2xl font-black mt-2">$124,563</p>
+                    </div>
+                    <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                        <i class="bi bi-currency-dollar"></i>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                    <span class="text-primary font-bold flex items-center gap-1">
+                        <i class="bi bi-graph-up-arrow text-sm"></i>
+                        +18.2%
+                    </span>
+                    <span class="text-[#61896f] dark:text-gray-400">vs last period</span>
+                </div>
+            </div>
+
+            <!-- Conversion Rate -->
+            <div
+                class="bg-white dark:bg-white/5 p-6 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-[#61896f] dark:text-gray-400 text-xs font-medium uppercase">Conversion Rate</p>
+                        <p class="text-[#111813] dark:text-white text-2xl font-black mt-2">3.24%</p>
+                    </div>
+                    <div class="size-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500">
+                        <i class="bi bi-shuffle"></i>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                    <span class="text-primary font-bold flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">trending_up</span>
+                        +0.8%
+                    </span>
+                    <span class="text-[#61896f] dark:text-gray-400">vs last period</span>
+                </div>
+            </div>
+
+            <!-- Average Order Value -->
+            <div
+                class="bg-white dark:bg-white/5 p-6 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-[#61896f] dark:text-gray-400 text-xs font-medium uppercase">Avg Order Value</p>
+                        <p class="text-[#111813] dark:text-white text-2xl font-black mt-2">$86.50</p>
+                    </div>
+                    <div class="size-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-500">
+                        <i class="bi bi-bag"></i>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                    <span class="text-red-500 font-bold flex items-center gap-1">
+                        <i class="bi bi-graph-down-arrow text-sm"></i>
+                        -2.1%
+                    </span>
+                    <span class="text-[#61896f] dark:text-gray-400">vs last period</span>
+                </div>
+            </div>
+
+            <!-- Total Visitors -->
+            <div
+                class="bg-white dark:bg-white/5 p-6 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-[#61896f] dark:text-gray-400 text-xs font-medium uppercase">Total Visitors</p>
+                        <p class="text-[#111813] dark:text-white text-2xl font-black mt-2">45,892</p>
+                    </div>
+                    <div class="size-10 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-500">
+                        <i class="bi bi-people"></i>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                    <span class="text-primary font-bold flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">trending_up</span>
+                        +24.5%
+                    </span>
+                    <span class="text-[#61896f] dark:text-gray-400">vs last period</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Revenue Chart -->
+        <div
+            class="bg-white dark:bg-white/5 p-6 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10 mb-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div>
+                    <h3 class="text-[#111813] dark:text-white text-lg font-bold">Revenue Overview</h3>
+                    <p class="text-xs text-[#61896f] dark:text-gray-400">Monthly revenue trends</p>
+                </div>
+                <div class="flex gap-2">
+                    <button class="px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-xs font-bold">Revenue</button>
+                    <button
+                        class="px-3 py-1.5 rounded-lg bg-[#f0f4f2] dark:bg-white/5 text-[#61896f] text-xs font-medium">Expenses</button>
+                </div>
+            </div>
+
+            <!-- Simple Line Chart Representation -->
+            <div class="h-64 flex items-end gap-4 px-4">
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-primary/20 rounded-t-lg" style="height: 40%"></div>
+                    <span class="text-xs text-[#61896f]">Jan</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-primary/30 rounded-t-lg" style="height: 55%"></div>
+                    <span class="text-xs text-[#61896f]">Feb</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-primary/40 rounded-t-lg" style="height: 48%"></div>
+                    <span class="text-xs text-[#61896f]">Mar</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-primary/50 rounded-t-lg" style="height: 70%"></div>
+                    <span class="text-xs text-[#61896f]">Apr</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-primary/60 rounded-t-lg" style="height: 65%"></div>
+                    <span class="text-xs text-[#61896f]">May</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-primary/70 rounded-t-lg" style="height: 85%"></div>
+                    <span class="text-xs text-[#61896f]">Jun</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-primary rounded-t-lg" style="height: 95%"></div>
+                    <span class="text-xs text-[#61896f]">Jul</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Two Column Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+
+            <!-- Traffic Sources -->
+            <div
+                class="bg-white dark:bg-white/5 p-6 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10">
+                <h3 class="text-[#111813] dark:text-white text-lg font-bold mb-6">Traffic Sources</h3>
+
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex items-center gap-2">
+                                <i class="bi bi-search text-primary"></i>
+                                <span class="text-sm font-bold">Organic Search</span>
+                            </div>
+                            <span class="text-sm font-black">42.5%</span>
+                        </div>
+                        <div class="h-2 bg-[#f0f4f2] dark:bg-white/10 rounded-full overflow-hidden">
+                            <div class="h-full bg-primary rounded-full transition-all duration-1000"
+                                style="width: 42.5%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex items-center gap-2">
+                                <i class="bi bi-link-45deg text-blue-500"></i>
+                                <span class="text-sm font-bold">Direct Traffic</span>
+                            </div>
+                            <span class="text-sm font-black">28.3%</span>
+                        </div>
+                        <div class="h-2 bg-[#f0f4f2] dark:bg-white/10 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-500 rounded-full transition-all duration-1000"
+                                style="width: 28.3%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex items-center gap-2">
+                                <i class="bi bi-share text-purple-500"></i>
+                                <span class="text-sm font-bold">Social Media</span>
+                            </div>
+                            <span class="text-sm font-black">18.7%</span>
+                        </div>
+                        <div class="h-2 bg-[#f0f4f2] dark:bg-white/10 rounded-full overflow-hidden">
+                            <div class="h-full bg-purple-500 rounded-full transition-all duration-1000"
+                                style="width: 18.7%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex items-center gap-2">
+                                <i class="bi bi-envelope text-orange-500"></i>
+                                <span class="text-sm font-bold">Email Marketing</span>
+                            </div>
+                            <span class="text-sm font-black">10.5%</span>
+                        </div>
+                        <div class="h-2 bg-[#f0f4f2] dark:bg-white/10 rounded-full overflow-hidden">
+                            <div class="h-full bg-orange-500 rounded-full transition-all duration-1000"
+                                style="width: 10.5%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Products Performance -->
+            <div
+                class="bg-white dark:bg-white/5 p-6 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10">
+                <h3 class="text-[#111813] dark:text-white text-lg font-bold mb-6">Top Products Performance</h3>
+
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-[#f0f4f2] dark:bg-white/5">
+                        <div class="flex items-center gap-3">
+                            <div class="size-10 rounded-lg bg-white dark:bg-background-dark overflow-hidden">
+                                <img src="images/product1.png" alt="Product" class="w-full h-full object-cover" />
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold">Jersey Graphic Tee</p>
+                                <p class="text-xs text-[#61896f]">1,420 sales</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-black text-primary">$59,640</p>
+                            <p class="text-xs text-[#61896f]">Revenue</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-[#f0f4f2] dark:bg-white/5">
+                        <div class="flex items-center gap-3">
+                            <div class="size-10 rounded-lg bg-white dark:bg-background-dark overflow-hidden">
+                                <img src="images/product2.png" alt="Product" class="w-full h-full object-cover" />
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold">Canvas Tote Bag</p>
+                                <p class="text-xs text-[#61896f]">980 sales</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-black text-primary">$27,440</p>
+                            <p class="text-xs text-[#61896f]">Revenue</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-[#f0f4f2] dark:bg-white/5">
+                        <div class="flex items-center gap-3">
+                            <div class="size-10 rounded-lg bg-gray-200 dark:bg-gray-700"></div>
+                            <div>
+                                <p class="text-sm font-bold">Minimal Sneakers</p>
+                                <p class="text-xs text-[#61896f]">756 sales</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-black text-primary">$45,360</p>
+                            <p class="text-xs text-[#61896f]">Revenue</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Customer Behavior -->
+        <div class="bg-white dark:bg-white/5 p-6 rounded-2xl shadow-sm border border-[#f0f4f2] dark:border-white/10">
+            <h3 class="text-[#111813] dark:text-white text-lg font-bold mb-6">Customer Behavior Insights</h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="size-16 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center">
+                        <i class="bi bi-clock text-2xl text-primary"></i>
+                    </div>
+                    <p class="text-2xl font-black text-[#111813] dark:text-white mb-1">4m 32s</p>
+                    <p class="text-xs text-[#61896f] dark:text-gray-400">Avg Session Duration</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="size-16 mx-auto mb-3 rounded-full bg-blue-500/10 flex items-center justify-center">
+                        <i class="bi bi-file-earmark-text text-2xl text-blue-500"></i>
+                    </div>
+                    <p class="text-2xl font-black text-[#111813] dark:text-white mb-1">3.8</p>
+                    <p class="text-xs text-[#61896f] dark:text-gray-400">Pages Per Session</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="size-16 mx-auto mb-3 rounded-full bg-purple-500/10 flex items-center justify-center">
+                        <i class="bi bi-box-arrow-right text-2xl text-purple-500"></i>
+                    </div>
+                    <p class="text-2xl font-black text-[#111813] dark:text-white mb-1">42.3%</p>
+                    <p class="text-xs text-[#61896f] dark:text-gray-400">Bounce Rate</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="size-16 mx-auto mb-3 rounded-full bg-orange-500/10 flex items-center justify-center">
+                        <i class="bi bi-arrow-repeat text-2xl text-orange-500"></i>
+                    </div>
+                    <p class="text-2xl font-black text-[#111813] dark:text-white mb-1">68.5%</p>
+                    <p class="text-xs text-[#61896f] dark:text-gray-400">Returning Visitors</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="container-custom mx-auto max-w-[1440px] py-8 border-t border-[#f0f4f2] dark:border-white/10 mt-12">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-[#61896f] dark:text-gray-400 text-xs font-medium text-center md:text-left">© 2024 OSalean
+                Management System. All rights reserved.</p>
+            <div class="flex flex-wrap justify-center gap-4 md:gap-6">
+                <a class="text-[#61896f] dark:text-gray-400 text-xs font-medium hover:text-primary transition-colors"
+                    href="#">Privacy Policy</a>
+                <a class="text-[#61896f] dark:text-gray-400 text-xs font-medium hover:text-primary transition-colors"
+                    href="#">Terms of Service</a>
+                <a class="text-[#61896f] dark:text-gray-400 text-xs font-medium hover:text-primary transition-colors"
+                    href="#">Help Center</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/6281234567890?text=Halo%20OSalean,%20saya%20ingin%20bertanya%20tentang%20analytics"
+        target="_blank" class="floating-wa">
+        <div
+            class="size-14 bg-[#25D366] rounded-full shadow-lg flex items-center justify-center text-white hover:scale-110 transition-transform">
+            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+            </svg>
+        </div>
+    </a>
+
+    <!-- Floating Scroll to Top Button -->
+    <button id="scrollToTop" class="floating-up">
+        <div
+            class="size-12 bg-primary rounded-full shadow-lg flex items-center justify-center text-background-dark hover:scale-110 transition-transform">
+            <i class="bi bi-arrow-up text-2xl"></i>
+        </div>
+    </button>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+        const closeMobileMenu = document.getElementById('closeMobileMenu');
+
+        function openMobileMenu() {
+            mobileMenu.classList.add('active');
+            mobileMenuOverlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileMenuFunc() {
+            mobileMenu.classList.remove('active');
+            mobileMenuOverlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        mobileMenuBtn.addEventListener('click', openMobileMenu);
+        closeMobileMenu.addEventListener('click', closeMobileMenuFunc);
+        mobileMenuOverlay.addEventListener('click', closeMobileMenuFunc);
+
+        // Period Toggle
+        const periodBtns = document.querySelectorAll('.period-btn');
+        periodBtns.forEach(btn => {
+            btn.addEventListener('click', function () {
+                periodBtns.forEach(b => {
+                    b.classList.remove('active', 'bg-primary', 'text-background-dark');
+                    b.classList.add('bg-white', 'dark:bg-white/5', 'border', 'text-[#61896f]');
+                });
+                this.classList.add('active', 'bg-primary', 'text-background-dark');
+                this.classList.remove('bg-white', 'dark:bg-white/5', 'border', 'text-[#61896f]');
+
+                const period = this.getAttribute('data-period');
+                console.log('Switched to period:', period);
+            });
+        });
+
+        // Scroll to Top Button
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+
+        window.addEventListener('scroll', function () {
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.classList.add('show');
+            } else {
+                scrollToTopBtn.classList.remove('show');
+            }
+        });
+
+        scrollToTopBtn.addEventListener('click', function () {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+
+</body>
+
+</html>
